@@ -6,19 +6,21 @@ use Illuminate\Http\Request;
 use App\Models\Warga;
 use App\Models\Laporan;
 use App\Models\Info;
+use App\Models\JenisSurat;
 
 class WargaController extends Controller
 {
-    // Halaman utama
+    // Halaman utama (home)
     public function index()
     {
         $laporans = Laporan::with('warga')->latest()->limit(5)->get();
         $infos = Info::latest()->limit(5)->get();
+        $jenisSurat = JenisSurat::all(); // Tambahan: kirim semua jenis surat
 
-        return view('home', compact('laporans', 'infos'));
+        return view('home', compact('laporans', 'infos', 'jenisSurat'));
     }
 
-    // Simpan laporan
+    // Simpan laporan dari warga
     public function store(Request $request)
     {
         $request->validate([
@@ -30,6 +32,7 @@ class WargaController extends Controller
             'no_hp' => 'nullable|string',
         ]);
 
+        // Cari warga berdasarkan NIK, atau buat baru
         $warga = Warga::firstOrCreate(
             ['nik' => $request->nik],
             [
@@ -39,6 +42,7 @@ class WargaController extends Controller
             ]
         );
 
+        // Simpan laporan
         Laporan::create([
             'judul' => $request->judul,
             'isi' => $request->isi,

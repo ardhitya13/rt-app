@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\Warga;
 use App\Models\Laporan;
+use App\Models\PengajuanSurat;
 use Filament\Pages\Page;
 
 class DashboardAdmin extends Page
@@ -16,7 +17,6 @@ class DashboardAdmin extends Page
 
     public function getViewData(): array
     {
-        // Ambil data laporan per bulan
         $laporanBulanan = Laporan::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
             ->whereYear('created_at', now()->year)
             ->groupBy('bulan')
@@ -32,12 +32,24 @@ class DashboardAdmin extends Page
             $values[] = $data ? $data->total : 0;
         }
 
+        $suratStatus = [
+            'Diproses' => PengajuanSurat::where('status', 'Diproses')->count(),
+            'Selesai' => PengajuanSurat::where('status', 'Selesai')->count(),
+            'Ditolak' => PengajuanSurat::where('status', 'Ditolak')->count(),
+        ];
+
         return [
             'jumlahWarga' => Warga::count(),
             'jumlahLaporan' => Laporan::count(),
+            'jumlahPengajuanSurat' => PengajuanSurat::count(),
             'laporanTerbaru' => Laporan::with('warga')->latest()->take(5)->get(),
             'chartLabels' => $labels,
             'chartData' => $values,
+            'suratStatus' => [
+                'Diproses' => PengajuanSurat::where('status', 'Diproses')->count(),
+                'Selesai' => PengajuanSurat::where('status', 'Selesai')->count(),
+                'Ditolak' => PengajuanSurat::where('status', 'Ditolak')->count(),
+            ],
         ];
     }
 }

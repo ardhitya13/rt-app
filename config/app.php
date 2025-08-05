@@ -123,4 +123,13 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    'aliases' => [
+        'App' => Illuminate\Support\Facades\App::class,
+        'Arr' => Illuminate\Support\Arr::class,
+        'Auth' => Illuminate\Support\Facades\Auth::class,
+    // ...
+     'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
+],
+
 ];

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <title>Selamat Datang di RT Kita</title>
@@ -9,50 +8,61 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
 </head>
 
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans leading-relaxed">
 
     <!-- Navbar -->
-    <nav class="bg-white shadow p-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-blue-600">RT App</h1>
-        <a href="{{ route('laporan.form') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Isi Laporan
+    <nav class="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50">
+        <h1 class="text-xl font-bold text-blue-600">🏘️ RT App</h1>
+        <a href="{{ route('laporan.form') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+            + Isi Laporan
         </a>
     </nav>
 
-    <!-- Gambar Slider -->
+    <!-- Swiper -->
     <div class="my-6 max-w-5xl mx-auto">
         <div class="swiper rounded-lg overflow-hidden shadow-lg">
             <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                    <img src="{{ asset('images/slider1.png') }}" class="w-full" alt="Lingkungan RT 1">
-                </div>
-                <div class="swiper-slide">
-                    <img src="{{ asset('images/slider2.png') }}" class="w-full" alt="Warga Berkumpul">
-                </div>
-                <div class="swiper-slide">
-                    <img src="{{ asset('images/slider3.png') }}" class="w-full" alt="Gotong Royong">
-                </div>
+                <div class="swiper-slide"><img src="{{ asset('images/slider1.png') }}" class="w-full" alt="Lingkungan RT"></div>
+                <div class="swiper-slide"><img src="{{ asset('images/slider2.png') }}" class="w-full" alt="Warga RT"></div>
+                <div class="swiper-slide"><img src="{{ asset('images/slider3.png') }}" class="w-full" alt="Gotong Royong"></div>
             </div>
             <div class="swiper-pagination"></div>
         </div>
     </div>
 
     <!-- Info RT -->
-    <section class="max-w-5xl mx-auto my-10 bg-white p-6 rounded shadow">
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">📰 Info & Berita RT</h2>
+    <section class="max-w-5xl mx-auto bg-white p-6 rounded shadow mb-10">
+        <h2 class="text-2xl font-bold mb-4 text-blue-700">📰 Info & Berita RT</h2>
 
-        @if ($infos->count())
+        @if(isset($infos) && $infos->count())
             @foreach ($infos as $info)
                 <article class="mb-5 border-b pb-4">
-                    <h3 class="font-semibold text-lg">📌 {{ $info->judul }}</h3>
-                    <p class="text-gray-500 text-sm">Tanggal:
-                        {{ \Carbon\Carbon::parse($info->tanggal)->translatedFormat('d F Y') }}</p>
+                    <h3 class="font-semibold text-lg text-gray-800">📌 {{ $info->judul }}</h3>
+                    <p class="text-gray-500 text-sm">🗓️ {{ \Carbon\Carbon::parse($info->tanggal)->translatedFormat('d F Y') }}</p>
                     <p class="mt-2 text-gray-700">{{ $info->isi }}</p>
                 </article>
             @endforeach
         @else
             <p class="text-gray-500 text-sm">Belum ada info terbaru dari RT.</p>
         @endif
+    </section>
+
+    <!-- Ajukan Surat -->
+    <div class="text-center my-10">
+        <a href="{{ route('pengajuan.form') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded text-lg transition">
+            📝 Ajukan Surat
+        </a>
+    </div>
+
+    <!-- Cek Riwayat -->
+    <section class="max-w-2xl mx-auto bg-white p-6 my-10 rounded shadow">
+        <h2 class="text-xl font-bold mb-4 text-gray-800">🔍 Cek Riwayat Pengajuan Surat</h2>
+        <form action="{{ route('pengajuan.riwayat') }}" method="GET" class="space-y-4">
+            <input type="text" name="nik" placeholder="Masukkan NIK Anda" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                Cek Riwayat
+            </button>
+        </form>
     </section>
 
     <!-- Laporan Warga -->
@@ -67,9 +77,8 @@
                             <h3 class="font-semibold text-lg text-gray-900">{{ $laporan->judul }}</h3>
                             <span class="text-sm text-gray-500">{{ $laporan->created_at->format('d M Y, H:i') }}</span>
                         </div>
-                        <p class="text-sm text-gray-700 mt-1">{{ \Illuminate\Support\Str::limit($laporan->isi, 120) }}
-                        </p>
-                        <p class="text-xs text-gray-500 italic">Oleh: {{ $laporan->warga->nama }}</p>
+                        <p class="text-sm text-gray-700 mt-1">{{ \Illuminate\Support\Str::limit($laporan->isi, 120) }}</p>
+                        <p class="text-xs text-gray-500 italic">🧍 Oleh: {{ $laporan->warga->nama }}</p>
                     </li>
                 @endforeach
             </ul>
@@ -78,11 +87,10 @@
         @endif
     </section>
 
-    <!-- Tombol Laporan -->
+    <!-- Tombol Kirim Laporan -->
     <div class="text-center my-8">
-        <a href="{{ route('laporan.form') }}"
-            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded text-lg">
-            Kirim Laporan Sekarang
+        <a href="{{ route('laporan.form') }}" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded text-lg transition">
+            📣 Kirim Laporan Sekarang
         </a>
     </div>
 
@@ -91,17 +99,13 @@
         &copy; {{ date('Y') }} RT App - Sistem Informasi RT
     </footer>
 
+    <!-- Swiper Script -->
     <script>
         const swiper = new Swiper('.swiper', {
             loop: true,
-            autoplay: {
-                delay: 3000
-            },
-            pagination: {
-                el: '.swiper-pagination'
-            },
+            autoplay: { delay: 3000 },
+            pagination: { el: '.swiper-pagination' },
         });
     </script>
 </body>
-
 </html>
